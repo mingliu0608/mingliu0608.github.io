@@ -1,0 +1,262 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>交并集查询 | freDram</title><meta name="keywords" content="算法"><meta name="author" content="mingliu"><meta name="copyright" content="mingliu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Quick-Find和Quick-Union本文两个算法案例选自《算法第四版》 1.5中案例分析 Quick-Find和Quick-find主要用来研究动态连通性问题 动态连通性的应用场景：  网络连接判断：  如果每个pair中的两个整数分别代表一个网络节点，那么该pair就是用来表示这两个节点是需要连通的。那么为所有的pairs建立了动态连通图后，就能够尽可能少的减少布线的需要，因为已经连通的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="交并集查询">
+<meta property="og:url" content="https://mingliu0608.github.io/2021/09/24/%E4%BA%A4%E5%B9%B6%E9%9B%86%E6%9F%A5%E8%AF%A2/index.html">
+<meta property="og:site_name" content="freDram">
+<meta property="og:description" content="Quick-Find和Quick-Union本文两个算法案例选自《算法第四版》 1.5中案例分析 Quick-Find和Quick-find主要用来研究动态连通性问题 动态连通性的应用场景：  网络连接判断：  如果每个pair中的两个整数分别代表一个网络节点，那么该pair就是用来表示这两个节点是需要连通的。那么为所有的pairs建立了动态连通图后，就能够尽可能少的减少布线的需要，因为已经连通的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mignliu0608.oss-cn-beijing.aliyuncs.com/img/202109242317461.jpg">
+<meta property="article:published_time" content="2021-09-24T08:55:42.071Z">
+<meta property="article:modified_time" content="2021-09-26T14:35:33.086Z">
+<meta property="article:author" content="mingliu">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mignliu0608.oss-cn-beijing.aliyuncs.com/img/202109242317461.jpg"><link rel="shortcut icon" href="https://mignliu0608.oss-cn-beijing.aliyuncs.com/img/QQ图片20210924173334.jpg"><link rel="canonical" href="https://mingliu0608.github.io/2021/09/24/%E4%BA%A4%E5%B9%B6%E9%9B%86%E6%9F%A5%E8%AF%A2/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/mingliu0608.github.io/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/mingliu0608.github.io/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: true
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '交并集查询',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-09-26 22:35:33'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://mignliu0608.oss-cn-beijing.aliyuncs.com/img/QQ图片20210924173334.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/mingliu0608.github.io/archives/"><div class="headline">文章</div><div class="length-num">2</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/mingliu0608.github.io/tags/"><div class="headline">标签</div><div class="length-num">2</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/mingliu0608.github.io/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/mingliu0608.github.io/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/mingliu0608.github.io/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/mingliu0608.github.io/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/mingliu0608.github.io/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/mingliu0608.github.io/books/"><i class="fa-fw fas fa-book"></i><span> 书籍</span></a></li><li><a class="site-page child" href="/mingliu0608.github.io/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/mingliu0608.github.io/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/mingliu0608.github.io/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://mignliu0608.oss-cn-beijing.aliyuncs.com/img/202109242317461.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/mingliu0608.github.io/">freDram</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/mingliu0608.github.io/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/mingliu0608.github.io/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/mingliu0608.github.io/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/mingliu0608.github.io/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/mingliu0608.github.io/books/"><i class="fa-fw fas fa-book"></i><span> 书籍</span></a></li><li><a class="site-page child" href="/mingliu0608.github.io/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/mingliu0608.github.io/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/mingliu0608.github.io/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">交并集查询</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-09-24T08:55:42.071Z" title="发表于 2021-09-24 16:55:42">2021-09-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-09-26T14:35:33.086Z" title="更新于 2021-09-26 22:35:33">2021-09-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/mingliu0608.github.io/categories/%E7%AE%97%E6%B3%95/">算法</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="交并集查询"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Quick-Find和Quick-Union"><a href="#Quick-Find和Quick-Union" class="headerlink" title="Quick-Find和Quick-Union"></a>Quick-Find和Quick-Union</h1><p>本文两个算法案例选自<code>《算法第四版》</code> 1.5中案例分析</p>
+<p><code>Quick-Find</code>和<code>Quick-find</code>主要用来研究动态连通性问题</p>
+<p><strong>动态连通性的应用场景：</strong></p>
+<ul>
+<li>网络连接判断：</li>
+</ul>
+<p>如果每个pair中的两个整数分别代表一个网络节点，那么该pair就是用来表示这两个节点是需要连通的。那么为所有的pairs建立了动态连通图后，就能够尽可能少的减少布线的需要，因为已经连通的两个节点会被直接忽略掉</p>
+<img src="https://mignliu0608.oss-cn-beijing.aliyuncs.com/img/v2-435de84a47c8966edc5ac7f92865fdf2_1440w.jpg" style="zoom:50%;" />
+
+<h2 id="Quick-Find"><a href="#Quick-Find" class="headerlink" title="Quick-Find"></a>Quick-Find</h2><p><code>Quick-Find</code> 算法的思想很简单，</p>
+<ol>
+<li><p>维护一个整形数组<code>id[]</code>,初始化其初始值为各个节点的id序号</p>
+</li>
+<li><p>查询是否在一个集合：只需判断两个节点对应的id序号是否相等，若相等则将说明其在一个集合中</p>
+</li>
+<li><p>连接两个节点：只需将所有在同一集合的节点改为同一id即可，遍历id数组修改id为新加入的id</p>
+</li>
+<li><p>查询所属的集合：直接返回对应的id[index]即可</p>
+<p>完整的代码实现如下</p>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.algorithms.dataStruct;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * union-find算法</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UF</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] ids;<span class="comment">//分量id</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> count;</span><br><span class="line">     UF(<span class="keyword">int</span> N)&#123;</span><br><span class="line">        count = N;</span><br><span class="line">        ids = <span class="keyword">new</span> <span class="keyword">int</span>[N];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;N;i++)&#123;</span><br><span class="line">            ids[i] = i;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line">    <span class="comment">//将两个节点放入同一个集合（即相连）</span></span><br><span class="line">     <span class="function"><span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span> p,<span class="keyword">int</span> q)</span></span>&#123;</span><br><span class="line">       <span class="keyword">int</span> pId = find(p);</span><br><span class="line">       <span class="keyword">int</span> qId = find(q);</span><br><span class="line">       <span class="keyword">if</span>(pId==qId)&#123;</span><br><span class="line">           <span class="keyword">return</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">else</span> &#123;</span><br><span class="line">           <span class="comment">//将p的分量重新命名为q的名称</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;ids.length;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(ids[i]==pId)&#123;</span><br><span class="line">                ids[i] = qId;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">       &#125;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> p)</span></span>&#123;</span><br><span class="line">         <span class="keyword">return</span> ids[p];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">connect</span><span class="params">(<span class="keyword">int</span> p,<span class="keyword">int</span> q)</span></span>&#123;</span><br><span class="line">         <span class="keyword">return</span> ids[p]==ids[q];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="Quick-Union"><a href="#Quick-Union" class="headerlink" title="Quick-Union"></a>Quick-Union</h2><p>上述的<code>quick-find</code> 算法思路简单，因为它只需访问一次数组，但是对于每一次<code>union</code> 它都需要扫描整个数组来实现连接，因此对于大型数据来说效率很低</p>
+<p>下面讨论一种改进方法——<code>Quick-Union</code> ,由名字可知其为上述方法的互补，同样基于相同的数据结构——以触点为索引的id[]数组。</p>
+<p>Quick Find使用的方式是，将联通的节点index改为一样的，所以更新后的index可以分为若干组，每个组内的index是相同的，每个组表示相互联通的节点组合。组员间的关系可以看作是<code>平级的</code>。</p>
+<p>Quick Union使用的方式是，将联通的节点之间用父子关系串联起来，所以组员间的关系可以看作是<code>树状的</code>。</p>
+<p>我们从给定的触点出发。由他的触点得到另一个触点，再由这个触点到达第三个触点，直至随着链接到达根触点，即这个触点的链接指向自己。</p>
+<p>具体代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.algorithms.dataStruct;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Quick-Union算法</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">QuickUnion</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] ids;<span class="comment">//分量id</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> count;</span><br><span class="line">    QuickUnion(<span class="keyword">int</span> N)&#123;</span><br><span class="line">        count = N;</span><br><span class="line">        ids = <span class="keyword">new</span> <span class="keyword">int</span>[N];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;N;i++)&#123;</span><br><span class="line">            ids[i] = i;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * p和q的根节点连接起来</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> p p节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> q q节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">quickUnion</span><span class="params">(<span class="keyword">int</span> p,<span class="keyword">int</span> q)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> pRoot = find(p);</span><br><span class="line">        <span class="keyword">int</span> qRoot = find(q);</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.connect(p,q))&#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ids[pRoot] = qRoot;</span><br><span class="line">        <span class="comment">//只需要更改一个链接就能让集合相连</span></span><br><span class="line">        count--;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 展出p节点的根节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> p p节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> pRoot</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> p)</span></span>&#123;</span><br><span class="line">        <span class="comment">//知道查找节点连接为自身的节点为止，找到了根节点</span></span><br><span class="line">        <span class="keyword">while</span> (p!=ids[p])&#123;</span><br><span class="line">            p= ids[p];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> p;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">connect</span><span class="params">(<span class="keyword">int</span> p,<span class="keyword">int</span> q)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> pRoot = find(p);</span><br><span class="line">        <span class="keyword">int</span> qRoot = find(q);</span><br><span class="line">        <span class="keyword">return</span> pRoot == qRoot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>测试用例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    QuickUnion quickUnion = <span class="keyword">new</span> QuickUnion(<span class="number">10</span>);</span><br><span class="line">    quickUnion.quickUnion(<span class="number">1</span>,<span class="number">3</span>);</span><br><span class="line">    quickUnion.quickUnion(<span class="number">2</span>,<span class="number">5</span>);</span><br><span class="line">    quickUnion.quickUnion(<span class="number">3</span>,<span class="number">6</span>);</span><br><span class="line">    quickUnion.quickUnion(<span class="number">6</span>,<span class="number">7</span>);</span><br><span class="line">    quickUnion.quickUnion(<span class="number">2</span>,<span class="number">7</span>);</span><br><span class="line">    System.out.println(<span class="string">&quot;1-&gt;5:&quot;</span>+quickUnion.connect(<span class="number">1</span>,<span class="number">5</span>));</span><br><span class="line">    System.out.println(<span class="string">&quot;4-&gt;9:&quot;</span>+quickUnion.connect(<span class="number">4</span>,<span class="number">9</span>));</span><br><span class="line">    Arrays.stream(quickUnion.ids).forEach(System.out::println);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>sout:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">1-&gt;5:<span class="literal">true</span></span><br><span class="line">4-&gt;9:<span class="literal">false</span></span><br><span class="line">0</span><br><span class="line">3</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">4</span><br><span class="line">7</span><br><span class="line">7</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line"></span><br><span class="line">进程已结束，退出代码为 0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="Quick-Union-with-Weight"><a href="#Quick-Union-with-Weight" class="headerlink" title="Quick-Union with Weight"></a>Quick-Union with Weight</h2><blockquote>
+<p>在quick-union算法中，使用了树这种数据结构来组织数据，但是在某些输入情况下，树的高度会变得太高，导致从某些触点链接到根触点的中间过程（find()方法执行过程）太多。查看quick-union算法的实现，树高度的增长来自于union()方法中合并两个分量的过程，即以下代码：</p>
+</blockquote>
+<img src="https://farm2.staticflickr.com/1683/25736804541_8bed7e414e_z.jpg" alt="https://farm2.staticflickr.com/1683/25736804541_8bed7e414e_z.jpg" style="zoom:80%;" />
+
+<p>为了随时获得每个分量所在树的大小，需要添加一个数组（sz）来记录每个分量树中触点的个数。初始化时，每个触点都是独立的一个分量，每个分量的大小都是1，当合并两个分量时，首先获得分量根触点及根触点所代表的分量大小，比较之后将较小的分量链接到较大的分量，最后更新合成后分量（较大分量）根触点所代表的分量大小。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.algorithms.dataStruct;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WeightedQuickUnionUF</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] id;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] sz;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> count;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WeightedQuickUnionUF</span><span class="params">(<span class="keyword">int</span> N)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        count = N;</span><br><span class="line">        id = <span class="keyword">new</span> <span class="keyword">int</span>[N];</span><br><span class="line">        sz = <span class="keyword">new</span> <span class="keyword">int</span>[N];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            id[i] = i;</span><br><span class="line">            sz[i] = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">connected</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123; <span class="keyword">return</span> find(p) == find(q); &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">count</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> count; &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> p)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (p != id[p]) p = id[p];</span><br><span class="line">        <span class="keyword">return</span> p;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> pRoot = find(p);</span><br><span class="line">        <span class="keyword">int</span> qRoot = find(q);</span><br><span class="line">        <span class="keyword">if</span> (pRoot == qRoot) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">if</span> (sz[pRoot] &gt; sz[qRoot]) &#123; id[qRoot] = pRoot; sz[pRoot] += sz[qRoot]; &#125;</span><br><span class="line">        <span class="keyword">else</span>                       &#123; id[pRoot] = qRoot; sz[qRoot] += sz[pRoot]; &#125;</span><br><span class="line">        count--;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="https://farm2.staticflickr.com/1643/25805847416_4f078530bf_c.jpg" style="zoom:80%;" />
+
+<p>经处理后的union-find 算法总是将小的树插入到大叔的根节点，树的深度降低</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://libhappy.com/2016/03/algs-1.4/index.html">普林斯顿算法（1.4）quick-union算法的优化 - LibHappy</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/0fcf047b88ff">Quick Union - 简书 (jianshu.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_39747794/article/details/80254661">(81条消息) Quick-Union算法_学习的西瓜皮的博客-CSDN博客</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">mingliu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://mingliu0608.github.io/2021/09/24/%E4%BA%A4%E5%B9%B6%E9%9B%86%E6%9F%A5%E8%AF%A2/">https://mingliu0608.github.io/2021/09/24/%E4%BA%A4%E5%B9%B6%E9%9B%86%E6%9F%A5%E8%AF%A2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://mingliu0608.github.io" target="_blank">freDram</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/mingliu0608.github.io/tags/%E7%AE%97%E6%B3%95/">算法</a></div><div class="post_share"><div class="social-share" data-image="https://mignliu0608.oss-cn-beijing.aliyuncs.com/img/202109242317461.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/mingliu0608.github.io/2021/09/26/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/"><img class="prev-cover" src="https://mignliu0608.oss-cn-beijing.aliyuncs.com/img/202109242317461.jpg" onerror="onerror=null;src='/mingliu0608.github.io/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">动态规划及常见题</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/mingliu0608.github.io/2021/09/26/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" title="动态规划及常见题"><img class="cover" src="https://mignliu0608.oss-cn-beijing.aliyuncs.com/img/202109242317461.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-09-26</div><div class="title">动态规划及常见题</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://mignliu0608.oss-cn-beijing.aliyuncs.com/img/QQ图片20210924173334.jpg" onerror="this.onerror=null;this.src='/mingliu0608.github.io/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">mingliu</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/mingliu0608.github.io/archives/"><div class="headline">文章</div><div class="length-num">2</div></a></div><div class="card-info-data-item is-center"><a href="/mingliu0608.github.io/tags/"><div class="headline">标签</div><div class="length-num">2</div></a></div><div class="card-info-data-item is-center"><a href="/mingliu0608.github.io/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/mingliu0608"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/mingliu0608" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://www.zhihu.com/people/liu-liu-liu-12138-20" target="_blank" title="知乎"><i class="fab fa-zhihu"></i></a><a class="social-icon" href="https://www.instagram.com/mingliu411/" target="_blank" title="ins"><i class="fab fa-instagram"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">写代码，弹弹吉他，正在跑步，笑看加速</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Quick-Find%E5%92%8CQuick-Union"><span class="toc-text">Quick-Find和Quick-Union</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Find"><span class="toc-text">Quick-Find</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Union"><span class="toc-text">Quick-Union</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Union-with-Weight"><span class="toc-text">Quick-Union with Weight</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/mingliu0608.github.io/2021/09/26/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" title="动态规划及常见题"><img src="https://mignliu0608.oss-cn-beijing.aliyuncs.com/img/202109242317461.jpg" onerror="this.onerror=null;this.src='/mingliu0608.github.io/img/404.jpg'" alt="动态规划及常见题"/></a><div class="content"><a class="title" href="/mingliu0608.github.io/2021/09/26/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" title="动态规划及常见题">动态规划及常见题</a><time datetime="2021-09-26T13:39:46.492Z" title="发表于 2021-09-26 21:39:46">2021-09-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/mingliu0608.github.io/2021/09/24/%E4%BA%A4%E5%B9%B6%E9%9B%86%E6%9F%A5%E8%AF%A2/" title="交并集查询"><img src="https://mignliu0608.oss-cn-beijing.aliyuncs.com/img/202109242317461.jpg" onerror="this.onerror=null;this.src='/mingliu0608.github.io/img/404.jpg'" alt="交并集查询"/></a><div class="content"><a class="title" href="/mingliu0608.github.io/2021/09/24/%E4%BA%A4%E5%B9%B6%E9%9B%86%E6%9F%A5%E8%AF%A2/" title="交并集查询">交并集查询</a><time datetime="2021-09-24T08:55:42.071Z" title="发表于 2021-09-24 16:55:42">2021-09-24</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2021 By mingliu</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/mingliu0608.github.io/js/utils.js"></script><script src="/mingliu0608.github.io/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: 'c68cb5787d6f85b934b3',
+      clientSecret: 'fb5c932f1ac596dbd76a2f746a125d65872b28b1',
+      repo: 'Gittalk-Repository',
+      owner: 'mingliu0608',
+      admin: ['mingliu0608'],
+      id: '7d02c624945f63731b9e465dcb1f2028',
+      language: 'zh-CN',
+      perPage: 10,
+      distractionFreeMode: false,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
